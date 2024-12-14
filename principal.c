@@ -6,7 +6,7 @@ void titulo_formatado();
 int menu_opecoes();
 void opcoes_inicio();
 void menu_cadastro_produto();
-void menu_produto();
+void menu_cadastro_listar();
 void cadastrar_produto();
 void listar_produto();
 
@@ -34,10 +34,10 @@ void titulo_formatado (char mensagem[]) {
 void opcoes_inicio(int opcao_escolhida) {
 	switch(opcao_escolhida) {
 	case 1:
-		menu_produto();
+		menu_cadastro_listar("produto");
 		break; 
 	case 2: 
-		printf("Acessando cadastro de funcionário");
+		menu_cadastro_listar("funcionario");
 		break;
 	}
 }
@@ -75,35 +75,48 @@ int menu_opecoes(int maximo_opcoes, char *opcoes[]) {
 }
 
 
-void menu_produto() {
-	titulo_formatado("Menu de cadastro de produtos!");
+void menu_cadastro_listar(char tipo[]) {
 
-	char *opcoes[] = {"1 - CADASTRAR", "2 - LISTAR"};
+	char mensagem[100] = "Menu de cadastro de ";
+	titulo_formatado(strcat(mensagem, tipo));
+
+	char *configuracoes_tipo[] = {"produto", "tbl_produtos.txt"};
+
+	if(strcmp(tipo, "funcionario") == 0) {
+		configuracoes_tipo[0] = "funcionario";
+		configuracoes_tipo[1] = "tbl_funcionarios.txt";
+	}
+
+	char *opcoes[] = {"1 - CADASTRAR", "2 - LISTAR", "3 - VOLTAR"};
 	int opcao_escolhida;
-	opcao_escolhida = menu_opecoes(2, opcoes);
+	opcao_escolhida = menu_opecoes(3, opcoes);
 
 	switch(opcao_escolhida) {
 		case 1:
-			cadastrar_produto();
+			cadastrar_produto(configuracoes_tipo);
 			break; 
 		case 2: 
-			listar_produto();
-		break;
+			listar_produto(configuracoes_tipo);
+			break;
+		case 3: 
+			main();
+			break;
 	}
 
 
 }
 
 
-void cadastrar_produto() {
-		titulo_formatado("Menu de cadastro de produtos!");
+void cadastrar_produto(char *configuracoes_tipo[]) {
+		char mensagem[100] = "Menu de cadastro de ";
+		titulo_formatado(strcat(mensagem, configuracoes_tipo[0]));
 
 		char nome_produto[100];
 
 		//buscando linhas para quantidade total
 		int qtd_produto = 0;
 		FILE *getProduto;
-		getProduto = fopen("tbl_produtos.txt", "r");
+		getProduto = fopen(configuracoes_tipo[1], "r");
 		char total_linhas[500];
 
 		if(getProduto != NULL) {
@@ -120,11 +133,11 @@ void cadastrar_produto() {
 
 		//Cadastrando nova linha
 		while(getchar() != '\n');
-		printf("Digite o nome do produto: ");
+		printf("Digite o nome do %s: ", configuracoes_tipo[0]);
 		fgets(nome_produto, sizeof(nome_produto), stdin);
 
 		FILE *setProduto;
-		setProduto = fopen("tbl_produtos.txt", "a");
+		setProduto = fopen(configuracoes_tipo[1], "a");
 		fprintf(setProduto, "%d,%s", qtd_produto, nome_produto);
 		fclose(setProduto);
 
@@ -132,22 +145,23 @@ void cadastrar_produto() {
 
 
 
-		menu_produto();
+		menu_cadastro_listar(configuracoes_tipo[0]);
 
 }
 
 
-void listar_produto() {
-		titulo_formatado("Menu de cadastro de produtos!");
+void listar_produto(char *configuracoes_tipo[]) {
+		char mensagem[100] = "Menu de cadastro de ";
+		titulo_formatado(strcat(mensagem, configuracoes_tipo[0]));
 
-		printf("Produtos cadastrados: ");
+		printf("%s cadastrados: ", configuracoes_tipo[0]);
 		printf("\n");
 
 		FILE *getProduto;
 		char lista_produtos[500];
 		char tecla_enter[500];
 
-		getProduto = fopen("tbl_produtos.txt", "r");
+		getProduto = fopen(configuracoes_tipo[1], "r");
 		while(fgets(lista_produtos, 500, getProduto)) {
 			printf("%s", lista_produtos);
 		}
@@ -160,6 +174,6 @@ void listar_produto() {
 		memset(tecla_enter, '\0', sizeof(tecla_enter));
 
 
-		menu_produto();
+		menu_cadastro_listar(configuracoes_tipo[0]);
 
 }
