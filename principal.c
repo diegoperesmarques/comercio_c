@@ -138,5 +138,28 @@ void cadastrar_produto() {
 
 
 void listar_produto() {
+		titulo_formatado("Menu de cadastro de produtos!");
+
+		printf("Produtos cadastrados: ");
+		printf("\n");
+
+		FILE *getProduto;
+		char lista_produtos[500];
+		char tecla_enter[500];
+
+		getProduto = fopen("tbl_produtos.txt", "r");
+		while(fgets(lista_produtos, 500, getProduto)) {
+			printf("%s", lista_produtos);
+		}
+
+		printf("\n");
+		printf("Tecle enter para voltar ...");
+		while(getchar() != '\n');
+		fgets(tecla_enter, sizeof(tecla_enter), stdin);
+
+		memset(tecla_enter, '\0', sizeof(tecla_enter));
+
+
+		menu_produto();
 
 }
