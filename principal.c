@@ -1,11 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 void titulo_formatado();
 int menu_opecoes();
 void opcoes_inicio();
 void menu_cadastro_produto();
 void menu_produto();
+void cadastrar_produto();
+void listar_produto();
 
 int main() {
 	titulo_formatado("Bem vindo ao sistema de comércio!");
@@ -14,7 +17,7 @@ int main() {
 	opcao_escolhida = menu_opecoes(2, opcoes);
 	opcoes_inicio(opcao_escolhida);
 	
-	printf("\n");
+	printf("\n"); 
 	return 0;
 }
 
@@ -75,5 +78,65 @@ int menu_opecoes(int maximo_opcoes, char *opcoes[]) {
 void menu_produto() {
 	titulo_formatado("Menu de cadastro de produtos!");
 
+	char *opcoes[] = {"1 - CADASTRAR", "2 - LISTAR"};
+	int opcao_escolhida;
+	opcao_escolhida = menu_opecoes(2, opcoes);
+
+	switch(opcao_escolhida) {
+		case 1:
+			cadastrar_produto();
+			break; 
+		case 2: 
+			listar_produto();
+		break;
+	}
+
+
+}
+
+
+void cadastrar_produto() {
+		titulo_formatado("Menu de cadastro de produtos!");
+
+		char nome_produto[100];
+
+		//buscando linhas para quantidade total
+		int qtd_produto = 0;
+		FILE *getProduto;
+		getProduto = fopen("tbl_produtos.txt", "r");
+		char total_linhas[500];
+
+		if(getProduto != NULL) {
+			while(fgets(total_linhas, 500, getProduto)) {
+				qtd_produto++;
+			}
+
+			fclose(getProduto);
+		}
+
+		memset(total_linhas, '\0', sizeof(total_linhas));
+		qtd_produto++;
+
+
+		//Cadastrando nova linha
+		while(getchar() != '\n');
+		printf("Digite o nome do produto: ");
+		fgets(nome_produto, sizeof(nome_produto), stdin);
+
+		FILE *setProduto;
+		setProduto = fopen("tbl_produtos.txt", "a");
+		fprintf(setProduto, "%d,%s", qtd_produto, nome_produto);
+		fclose(setProduto);
+
+		printf("\n");
+
+
+
+		menu_produto();
+
+}
+
+
+void listar_produto() {
 
 }
